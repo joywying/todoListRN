@@ -62,11 +62,15 @@ const styles = StyleSheet.create({
   tasksWrapper: {
     paddingTop: 80,
     paddingHorizontal: 20,
+    alignItems: 'center'
   },
   sectionTitle: {
-    fontSize: 24,
-    fontWeight: 'bold'
-  },
+    fontSize: 32,
+    fontWeight: 'bold',
+    letterSpacing: '-0.025em',
+    lineHeight: '1.2',
+    color: '#445C82', 
+  }, 
   items: {
     marginTop: 30,
   },
