@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 // useState is a hook for functional components
-import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, TouchableOpacity, Platform } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, TouchableOpacity, Platform, Image } from 'react-native';
 import Task from './components/Task'
 import { getTasks as getDBTasks, setTasks as setDBTasks } from './firebaseDatabase.js'
+import refresh from './assets/refresh_icon.png'
 
 export default function App() {
   const [task, setTask] = useState();
@@ -57,7 +58,7 @@ export default function App() {
       >
         <TouchableOpacity onPress={() => handleRefresh()}>
           <View style={styles.addWrapper}>
-            <Text style={styles.addText}>Refresh</Text>
+            <Image source={refresh} style={styles.refreshIconStyle}/>
           </View>
         </TouchableOpacity>
         <TextInput style={styles.input} placeholder={'Write a task'} value={task} onChangeText={text => setTask(text)} />
@@ -73,6 +74,11 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  refreshIconStyle: {
+    width: 20,
+    height: 20,
+    color: '#445C82'
+  },
   container: {
     flex: 1,
     backgroundColor: '#E8EAED',
@@ -84,7 +90,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 32,
     fontWeight: 'bold',
-    letterSpacing: '-0.025',
+    letterSpacing: -0.025,
     color: '#445C82'
   }, 
   items: {
