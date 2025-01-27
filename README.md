@@ -4,7 +4,7 @@
  - Clone the repository
  - I recommend opening the repository in VS Code
  - Run `npm install -g expo-cli` to install expo
- - Navigate into the repository directory and run `npx expo install`
+ - Navigate into the repository directory and run `npm install`
 
 ### Development
 - Use `npx expo start` to compile code and start the server
