@@ -1,21 +1,36 @@
 import React, {useState} from 'react';
 // useState is a hook for functional components
-import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView, Platform } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, TouchableOpacity, Platform } from 'react-native';
 import Task from './components/Task'
+import { getTasks as getDBTasks, setTasks as setDBTasks } from './firebaseDatabase.js'
 
 export default function App() {
   const [task, setTask] = useState();
   const [taskItems, setTaskItems] = useState([]);
-
-  const handleAddTask = () => {
-    setTaskItems([...taskItems, task])
+  
+  // Pull data from the database
+  const handleRefresh = async () => {
+    console.log("Refreshing")
+    allTasks = await getDBTasks()
+    if (allTasks) {
+      setTaskItems(allTasks)
+    }
+  }
+  
+  // Add a task when the plus button is clicked
+  const handleAddTask = async () => {
+    newTasks = [...taskItems, task]
+    await setDBTasks(newTasks)
+    await handleRefresh()
     setTask(null)
   };
 
-  const completeTask = (index) => {
+  // Remove a task when a user clicks it
+  const completeTask = async (index) => {
     let itemsCopy = [...taskItems];
     itemsCopy.splice(index, 1);
-    setTaskItems(itemsCopy)
+    await setDBTasks(itemsCopy)
+    await handleRefresh()
   }
 
   return (
@@ -24,8 +39,6 @@ export default function App() {
       <View style = {styles.tasksWrapper}>
         <Text style={styles.sectionTitle}>Today's Tasks</Text>
         <View style={styles.items}>
-          
-
         {
            taskItems.map((item, index) => {
             return (
@@ -42,6 +55,11 @@ export default function App() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.writeTaskWrapper}
       >
+        <TouchableOpacity onPress={() => handleRefresh()}>
+          <View style={styles.addWrapper}>
+            <Text style={styles.addText}>Refresh</Text>
+          </View>
+        </TouchableOpacity>
         <TextInput style={styles.input} placeholder={'Write a task'} value={task} onChangeText={text => setTask(text)} />
         <TouchableOpacity onPress={() => handleAddTask()}>
           <View style={styles.addWrapper}>
