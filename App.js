@@ -4,6 +4,8 @@ import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, TouchableOpaci
 import Task from './components/Task'
 import { getTasks as getDBTasks, setTasks as setDBTasks } from './firebaseDatabase.js'
 import refresh from './assets/refresh_icon.png'
+import weather from './assets/weather_icon.png'
+import { getTemperature } from './weather.js';
 
 export default function App() {
   const [task, setTask] = useState();
@@ -25,6 +27,17 @@ export default function App() {
     await handleRefresh()
     setTask(null)
   };
+
+  // Add a task to dress for the weather when weather button is clicked
+  const handleWeatherTask = async () => {
+    console.log('Handling weather task')
+    var currentTemperature = await getTemperature()
+    currentTemperature = Math.round(currentTemperature)
+    const temperatureTask = "Dress for the "  + currentTemperature + " degree weather in Atlanta!"
+    newTasks = [...taskItems, temperatureTask]
+    await setDBTasks(newTasks)
+    await handleRefresh()
+  }
 
   // Remove a task when a user clicks it
   const completeTask = async (index) => {
@@ -56,6 +69,11 @@ export default function App() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.writeTaskWrapper}
       >
+        <TouchableOpacity onPress={() => handleWeatherTask()}>
+          <View style={styles.addWrapper}>
+            <Image source={weather} style={styles.weatherIconStyle}/>
+          </View>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => handleRefresh()}>
           <View style={styles.addWrapper}>
             <Image source={refresh} style={styles.refreshIconStyle}/>
@@ -76,8 +94,11 @@ export default function App() {
 const styles = StyleSheet.create({
   refreshIconStyle: {
     width: 20,
-    height: 20,
-    color: '#445C82'
+    height: 20
+  },
+  weatherIconStyle: {
+    width: 40,
+    height: 40
   },
   container: {
     flex: 1,
@@ -114,7 +135,7 @@ const styles = StyleSheet.create({
     width: 250,
   },
   addWrapper: {
-    width: 60,
+    width: 45,
     height: 60,
     backgroundColor: '#FFF',
     borderRadius: 60,
